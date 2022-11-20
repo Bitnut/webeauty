@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 #[cfg(feature = "cli")]
 use reqwest::{Client, Url};
+use crate::config::Config;
 
 use crate::Error;
 
@@ -16,25 +17,30 @@ pub struct WeatherData {
 pub struct WeatherApi {
     client: Client,
     api_key: String,
+    api_id: String,
+    api_path: String
 }
 
 impl WeatherApi {
     #[must_use]
     pub fn new(
-        api_key: &str,
+        config: Config
     ) -> Self {
         Self {
             client: Client::new(),
-            api_key: String::from(api_key)
+            api_key: config.api_key,
+            api_id: config.api_id.unwrap_or(String::from("")),
+            api_path: config.api_path
         }
     }
 
     pub async fn get_data(
-        &self
+        &self,
     ) -> Result<String, Error> {
 
         let api_key = &self.api_key;
-        let base_url = String::from("https://api.openweathermap.org/data/2.5/forecast");
+        let api_path = &self.api_path;
+        let base_url = format!("https://api.openweathermap.org/{api_path}");
         let url = Url::parse_with_params(
             &base_url,
             &[("lat", "23.1291"), ("lon", "113.2644"), ("appid", &api_key)]
