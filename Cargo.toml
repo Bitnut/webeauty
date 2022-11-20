@@ -1,0 +1,27 @@
+[package]
+name = "webeauty"
+version = "0.1.0"
+edition = "2021"
+authors = ["Bitnut <940095072@qq.com>"]
+license-file = "LICENSE"
+description = "Server and utils package focus on catching weather beauty"
+homepage = "https://github.com/bitnut/webeauty"
+repository = "https://github.com/bitnut/webeauty"
+keywords = ["WEATHER", "FORECAST"]
+readme = "README.md"
+
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+thiserror = "1.0"
+url = "2.3"
+clap = {version="4.0", features=["derive"]}
+time = {version="0.3", features=["serde-human-readable", "macros"]}
+futures = "0.3"
+reqwest = { version="0.11", features=["json", "rustls-tls", "gzip"], default-features=false, optional=true}
+tokio = { version="1.21", features=["full"], optional=true}
+
+[features]
+default = ["cli"]
+cli = ["reqwest", "tokio"]
