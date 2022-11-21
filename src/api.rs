@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use reqwest::{Client, Url};
 use crate::config::Config;
 
-use crate::Error;
+use super::error::Error;
 
 #[derive(Deserialize, Serialize, Debug, Clone)]
 pub struct WeatherData {

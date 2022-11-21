@@ -1,6 +1,6 @@
 use std::fs;
 use serde::Deserialize;
-use crate::Error;
+use super::error::Error;
 
 /// Configuration data
 #[derive(Debug, Deserialize)]
