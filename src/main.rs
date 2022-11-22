@@ -1,7 +1,7 @@
 mod api;
 mod config;
 mod error;
-use api::WeatherApi;
+use api::{OpenWeatherClient, WeatherClient};
 use config::init_config;
 
 #[tokio::main]
@@ -10,7 +10,7 @@ async fn main() {
     let config = init_config().expect("init config failed");
 
     // use your own
-    let client = WeatherApi::new(config);
+    let client = OpenWeatherClient::new(config);
     let r = client.get_data().await;
 
     match r {

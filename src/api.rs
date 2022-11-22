@@ -14,16 +14,25 @@ pub struct WeatherData {
 }
 
 #[derive(Default, Clone)]
-pub struct WeatherApi {
+pub struct OpenWeatherClient {
     client: Client,
     api_key: String,
     api_id: String,
     api_path: String
 }
 
-impl WeatherApi {
+#[async_trait::async_trait]
+pub trait WeatherClient {
+    fn new (config: Config) -> Self;
+    async fn get_data (&self) -> Result<String, Error>;
+    fn get_origin (&self) -> String;
+}
+
+#[async_trait::async_trait]
+impl WeatherClient for OpenWeatherClient {
+
     #[must_use]
-    pub fn new(
+    fn new(
         config: Config
     ) -> Self {
         Self {
@@ -34,13 +43,14 @@ impl WeatherApi {
         }
     }
 
-    pub async fn get_data(
+    async fn get_data(
         &self,
     ) -> Result<String, Error> {
 
         let api_key = &self.api_key;
         let api_path = &self.api_path;
-        let base_url = format!("https://api.openweathermap.org/{api_path}");
+        let origin_url = &self.get_origin();
+        let base_url = format!("{origin_url}/{api_path}");
         let url = Url::parse_with_params(
             &base_url,
             &[("lat", "23.1291"), ("lon", "113.2644"), ("appid", &api_key)]
@@ -54,5 +64,10 @@ impl WeatherApi {
             .text()
             .await
             .map_err(Into::into)
+    }
+
+    fn get_origin(&self) -> String {
+
+        String::from("https://api.openweathermap.org")
     }
 }
